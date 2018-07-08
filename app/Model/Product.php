@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+	protected $fillable = [
+		'name', 'detail', 'stock', 'price', 'discount'
+	];
     // here one product has many review
     public function reviews()
     {
