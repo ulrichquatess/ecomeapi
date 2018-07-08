@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Model\Review;
 use App\Model\Product;
+use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReviewController extends Controller
 {
@@ -36,9 +38,18 @@ class ReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ReviewRequest $request, Product $product)
     {
-        //
+        //storing the details in the database
+        $review = new Review($request->all());
+
+        $product->reviews()->save($review);
+
+        return response([
+
+                'data' => new ReviewResource($review)
+            ],Response::HTTP_CREATED);
+
     }
 
     /**
@@ -47,9 +58,9 @@ class ReviewController extends Controller
      * @param  \App\Model\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function show(Review $review)
+    public function show(Request $review, Product $product)
     {
-        //
+        return $product;
     }
 
     /**
@@ -70,9 +81,14 @@ class ReviewController extends Controller
      * @param  \App\Model\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Review $review)
+    public function update(Request $request,Product $product, Review $review)
     {
-        //
+        $review->update($request->all());
+
+        return response([
+
+                'data' => new ReviewResource($review)
+            ],Response::HTTP_CREATED);
     }
 
     /**
@@ -81,8 +97,10 @@ class ReviewController extends Controller
      * @param  \App\Model\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Review $review)
+    public function destroy(Product $product, Review $review)
     {
-        //
+        $review->delete();
+
+        return response(null,Response::HTTP_NO_CONTENT);
     }
 }
